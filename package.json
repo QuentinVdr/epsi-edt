@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "lint -a": "biome check --apply",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "check": "biome ci"
   },
   "dependencies": {
     "next": "16.2.4",
