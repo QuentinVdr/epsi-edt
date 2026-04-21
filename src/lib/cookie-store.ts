@@ -33,3 +33,7 @@ export function invalidateCourseCache(): void {
 export function cacheAge(): number {
   return _cachedAt ? Math.round((Date.now() - _cachedAt) / 1000) : -1;
 }
+
+export function getCachedAt(): number {
+  return _cachedAt;
+}

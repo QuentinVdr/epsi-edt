@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
-import { getCachedCourses, setCachedCourses } from "@/lib/cookie-store";
+import { getCachedCourses, getCachedAt, setCachedCourses } from "@/lib/cookie-store";
 import type { EdtResponse } from "@/types/edt";
 
 const EDT_API =
@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
       Data: courses,
       Total: courses.length,
       _totalCached: all.length,
+      _fetchedAt: new Date(getCachedAt()).toISOString(),
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "UNKNOWN";
