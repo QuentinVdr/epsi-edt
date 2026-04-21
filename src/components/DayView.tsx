@@ -1,20 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { CourseModal } from "@/components/CourseModal";
 import {
   addDays,
   courseColor,
-  DAYS_LONG,
   formatCourseTime,
   getCoursesForDay,
   getHourRange,
   isLight,
   isSameDay,
-  positionCourse,
   PX_PER_HOUR,
+  positionCourse,
 } from "@/lib/edt-utils";
 import type { Course } from "@/types/edt";
-import { useState } from "react";
 
 interface Props {
   courses: Course[];
@@ -27,7 +26,6 @@ export function DayView({ courses, currentDate, onDateChange }: Props) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const dayName = DAYS_LONG[(currentDate.getDay() + 6) % 7];
   const isToday = isSameDay(currentDate, today);
   const dayCourses = getCoursesForDay(courses, currentDate);
 
