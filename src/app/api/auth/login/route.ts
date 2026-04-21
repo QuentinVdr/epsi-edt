@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { authenticateWithCAS } from "@/lib/cas-auth";
 import { invalidateCourseCache } from "@/lib/cookie-store";
+import { decryptPassword } from "@/lib/rsa-key";
 
 export async function POST(request: Request) {
   let username: string;
@@ -10,7 +11,14 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     username = body.username?.trim();
-    password = body.password;
+
+    // Accept either an RSA-encrypted password (preferred) or a plaintext
+    // fallback for backwards-compatibility during the transition.
+    if (body.encryptedPassword) {
+      password = decryptPassword(body.encryptedPassword);
+    } else {
+      password = body.password;
+    }
   } catch {
     return NextResponse.json(
       { error: "Corps de requête invalide." },

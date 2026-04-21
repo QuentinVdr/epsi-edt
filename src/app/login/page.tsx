@@ -3,6 +3,52 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// ── RSA-OAEP encryption helpers (Web Crypto API) ─────────────────────────────
+
+/** Converts a PEM public key string to an ArrayBuffer for importKey. */
+function pemToArrayBuffer(pem: string): ArrayBuffer {
+  const b64 = pem
+    .replace(/-----BEGIN PUBLIC KEY-----/, "")
+    .replace(/-----END PUBLIC KEY-----/, "")
+    .replace(/\s+/g, "");
+  const binary = atob(b64);
+  const buf = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) buf[i] = binary.charCodeAt(i);
+  return buf.buffer;
+}
+
+/**
+ * Fetches the server's ephemeral public key and uses it to RSA-OAEP-encrypt
+ * the given plaintext. Returns a base64-encoded ciphertext.
+ *
+ * The plaintext password is only ever held in JS memory; the encrypted form
+ * is what travels over the network.
+ */
+async function encryptPassword(plaintext: string): Promise<string> {
+  const { publicKey: pem } = await fetch("/api/auth/public-key").then((r) =>
+    r.json(),
+  );
+
+  const cryptoKey = await window.crypto.subtle.importKey(
+    "spki",
+    pemToArrayBuffer(pem),
+    { name: "RSA-OAEP", hash: "SHA-256" },
+    false,
+    ["encrypt"],
+  );
+
+  const encrypted = await window.crypto.subtle.encrypt(
+    { name: "RSA-OAEP" },
+    cryptoKey,
+    new TextEncoder().encode(plaintext),
+  );
+
+  // Encode as base64 for safe JSON transport
+  return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -16,10 +62,13 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // Encrypt the password client-side before it leaves the browser.
+      const encryptedPassword = await encryptPassword(password);
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, encryptedPassword }),
       });
 
       const data = await res.json();
@@ -59,7 +108,7 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-white/70">
-                Nom d'utilisateur
+                Nom d&apos;utilisateur
               </label>
               <input
                 type="text"
@@ -113,8 +162,8 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-4 text-center text-xs text-white/30">
-          Tes identifiants sont envoyés directement au serveur CAS Wigor et ne
-          sont jamais stockés.
+          Ton mot de passe est chiffré dans ton navigateur avant envoi et ne
+          transite jamais en clair.
         </p>
       </div>
     </div>
