@@ -58,7 +58,7 @@ export const MONTHS = [
 ];
 
 export function courseColor(c: Course) {
-  return `rgb(${c.ColorRed},${c.ColorGreen},${c.ColorBlue})`;
+  return `rgba(${c.ColorRed},${c.ColorGreen},${c.ColorBlue}, 0.6)`;
 }
 
 export function isLight(r: number, g: number, b: number) {
