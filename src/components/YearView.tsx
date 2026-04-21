@@ -73,7 +73,7 @@ function MiniMonth({
       </div>
 
       {/* Days */}
-      <div className="grid grid-cols-7 gap-y-0.5">
+      <div className="grid grid-cols-7 gap-y-2">
         {days.map((day, idx) => {
           if (!day) return <div key={`e-${idx}`} />;
 
@@ -86,19 +86,16 @@ function MiniMonth({
           return (
             <button
               key={day.toISOString()}
-              className={`flex flex-col items-center rounded py-0.5 text-[10px] transition-colors hover:bg-white/10 ${isToday ? "font-bold text-blue-300" : "text-white/60"}`}
+              className={`flex items-center justify-center rounded py-0.5 text-[10px] leading-none transition-colors hover:bg-white/10 ${isToday ? "font-bold text-blue-300" : "text-white/60"}`}
+              style={
+                hasCourses
+                  ? { borderBottom: `2px solid ${dotColor ?? "#fff"}` }
+                  : undefined
+              }
               onClick={() => onDayClick(day)}
               title={hasCourses ? `${dayCourses.length} cours` : undefined}
             >
-              <span>{day.getDate()}</span>
-              {hasCourses ? (
-                <span
-                  className="mt-0.5 h-1 w-1 rounded-full"
-                  style={{ background: dotColor ?? "#fff" }}
-                />
-              ) : (
-                <span className="mt-0.5 h-1 w-1" />
-              )}
+              {day.getDate()}
             </button>
           );
         })}
@@ -152,7 +149,7 @@ export function YearView({
       </div>
 
       {/* 12-month grid */}
-      <div className="grid flex-1 auto-rows-fr grid-cols-2 gap-3 overflow-auto sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 overflow-auto sm:grid-cols-3 lg:grid-cols-4">
         {Array.from({ length: 12 }, (_, m) => (
           <MiniMonth
             key={m}
