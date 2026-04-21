@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#09090b"/>
+  <!-- Calendar body -->
+  <rect x="96" y="136" width="320" height="276" rx="24" fill="#2563eb"/>
+  <!-- Calendar top bar (darker) -->
+  <rect x="96" y="136" width="320" height="80" rx="24" fill="#1d4ed8"/>
+  <rect x="96" y="176" width="320" height="40" fill="#1d4ed8"/>
+  <!-- Hook left -->
+  <rect x="168" y="96" width="28" height="80" rx="14" fill="#94a3b8"/>
+  <!-- Hook right -->
+  <rect x="316" y="96" width="28" height="80" rx="14" fill="#94a3b8"/>
+  <!-- Grid dots (3x3 calendar days) -->
+  <!-- Row 1 -->
+  <rect x="148" y="256" width="36" height="28" rx="6" fill="white" opacity="0.9"/>
+  <rect x="238" y="256" width="36" height="28" rx="6" fill="white" opacity="0.9"/>
+  <rect x="328" y="256" width="36" height="28" rx="6" fill="white" opacity="0.9"/>
+  <!-- Row 2 -->
+  <rect x="148" y="308" width="36" height="28" rx="6" fill="white" opacity="0.5"/>
+  <rect x="238" y="308" width="80" height="28" rx="6" fill="white" opacity="0.7"/>
+  <!-- Today highlight -->
+  <rect x="148" y="308" width="36" height="28" rx="6" fill="#fbbf24"/>
+</svg>
