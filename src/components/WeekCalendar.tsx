@@ -79,7 +79,7 @@ export function WeekCalendar({
         {/* sticky header row */}
         <div className="sticky top-0 z-20 flex w-full min-w-full">
           {/* corner */}
-          <div className="sticky left-0 z-30 w-14 flex-shrink-0 border-b border-r border-white/10 bg-zinc-950" />
+          <div className="sticky left-0 z-30 w-8 md:w-14 flex-shrink-0 border-b border-r border-white/10 bg-zinc-950" />
           {weekDays.map((day, i) => {
             const isToday = isSameDay(day, today);
             return (
@@ -106,7 +106,7 @@ export function WeekCalendar({
         <div className="flex w-full min-w-full">
           {/* Hour gutter */}
           <div
-            className="relative sticky left-0 z-10 w-14 flex-shrink-0 border-r border-white/10 bg-zinc-950"
+            className="relative sticky left-0 z-10 w-8 md:w-14 flex-shrink-0 border-r border-white/10 bg-zinc-950"
             style={{ height: (hourEnd - hourStart) * PX_PER_HOUR }}
           >
             {hours.map((h) => (
