@@ -10,7 +10,6 @@ import {
   getCoursesForDay,
   getHourRange,
   getMondayOf,
-  isLight,
   isSameDay,
   PX_PER_HOUR,
   positionCourse,
@@ -141,11 +140,6 @@ export function WeekCalendar({
                 {dayCourses.map((course) => {
                   const { top, height } = positionCourse(course, hourStart);
                   const bg = courseColor(course);
-                  const light = isLight(
-                    course.ColorRed,
-                    course.ColorGreen,
-                    course.ColorBlue,
-                  );
                   return (
                     <button
                       key={course.NoCours}
@@ -154,7 +148,7 @@ export function WeekCalendar({
                         top,
                         height,
                         background: bg,
-                        color: light ? "#111" : "#fff",
+                        color: "#111",
                       }}
                       onClick={() => setSelected(course)}
                     >

@@ -135,19 +135,12 @@ export function MonthView({
                 {/* Course dots / pills */}
                 <div className="flex flex-wrap gap-0.5">
                   {visible.map((c) => (
-                    <button
+                    <div
                       key={c.NoCours}
-                      className="max-w-full truncate rounded px-1 py-0.5 text-[10px] leading-tight"
+                      className="max-w-full cursor-pointer truncate rounded px-1 py-0.5 text-[10px] leading-tight"
                       style={{
                         background: courseColor(c),
-                        color:
-                          (c.ColorRed * 299 +
-                            c.ColorGreen * 587 +
-                            c.ColorBlue * 114) /
-                            1000 >
-                          128
-                            ? "#111"
-                            : "#fff",
+                        color: "#111",
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -156,7 +149,7 @@ export function MonthView({
                       title={c.Commentaire}
                     >
                       {c.Commentaire}
-                    </button>
+                    </div>
                   ))}
                   {extra > 0 && (
                     <span className="rounded px-1 py-0.5 text-[10px] text-white/40">

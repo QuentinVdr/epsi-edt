@@ -57,12 +57,17 @@ export const MONTHS = [
   "Décembre",
 ];
 
-export function courseColor(c: Course) {
-  return `rgba(${c.ColorRed},${c.ColorGreen},${c.ColorBlue}, 0.6)`;
+function stringToHue(s: string): number {
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) {
+    hash = (hash * 31 + s.charCodeAt(i)) & 0xffff;
+  }
+  return hash % 360;
 }
 
-export function isLight(r: number, g: number, b: number) {
-  return (r * 299 + g * 587 + b * 114) / 1000 > 128;
+export function courseColor(c: Course) {
+  const hue = stringToHue(c.Commentaire ?? "");
+  return `hsl(${hue}, 55%, 65%)`;
 }
 
 // Wigor stores times in UTC but tags them with +02:00 — use UTC accessors to

@@ -8,7 +8,6 @@ import {
   formatCourseTime,
   getCoursesForDay,
   getHourRange,
-  isLight,
   isSameDay,
   PX_PER_HOUR,
   positionCourse,
@@ -113,11 +112,6 @@ export function DayView({ courses, currentDate, onDateChange }: Props) {
             {dayCourses.map((course) => {
               const { top, height } = positionCourse(course, hourStart);
               const bg = courseColor(course);
-              const light = isLight(
-                course.ColorRed,
-                course.ColorGreen,
-                course.ColorBlue,
-              );
               return (
                 <button
                   key={course.NoCours}
@@ -126,7 +120,7 @@ export function DayView({ courses, currentDate, onDateChange }: Props) {
                     top,
                     height,
                     background: bg,
-                    color: light ? "#111" : "#fff",
+                    color: "#111",
                   }}
                   onClick={() => setSelected(course)}
                 >
