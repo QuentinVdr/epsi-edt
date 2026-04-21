@@ -40,11 +40,12 @@ export async function GET(request: NextRequest) {
   const dateFin = searchParams.get("dateFin");
 
   try {
-    // Serve from in-memory cache when available
-    let all = getCachedCourses();
+    // Serve from in-memory cache when available — keyed by cookie to prevent
+    // cross-student data leaks on a shared server process.
+    let all = getCachedCourses(edtSession);
     if (!all) {
       all = await loadAllCourses(edtSession);
-      setCachedCourses(all);
+      setCachedCourses(all, edtSession);
     }
 
     const courses =

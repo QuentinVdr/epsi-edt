@@ -1,44 +1,31 @@
 import type { Course } from "@/types/edt";
 
 // Module-level singletons — survive for the lifetime of the Node.js process.
-// In dev mode (single process) this is perfect for a personal-use app.
+// Cache is keyed by session cookie so different students never share data.
 
-let _cookie: string | null = null;
+let _cachedForCookie: string | null = null;
 let _courses: Course[] | null = null;
 let _cachedAt = 0;
 const TTL_MS = 3_600_000; // 1 hour
 
-export function getEdtCookie(): string | null {
-  return _cookie;
-}
-
-export function setEdtCookie(cookie: string): void {
-  _cookie = cookie;
-  _courses = null; // invalidate course cache when cookie changes
-  _cachedAt = 0;
-}
-
-export function clearEdtCookie(): void {
-  _cookie = null;
-  _courses = null;
-  _cachedAt = 0;
-}
-
-export function isAuthenticated(): boolean {
-  return _cookie !== null;
-}
-
-export function getCachedCourses(): Course[] | null {
-  if (_courses && Date.now() - _cachedAt < TTL_MS) return _courses;
+export function getCachedCourses(forCookie: string): Course[] | null {
+  if (
+    _courses &&
+    _cachedForCookie === forCookie &&
+    Date.now() - _cachedAt < TTL_MS
+  )
+    return _courses;
   return null;
 }
 
-export function setCachedCourses(courses: Course[]): void {
+export function setCachedCourses(courses: Course[], forCookie: string): void {
+  _cachedForCookie = forCookie;
   _courses = courses;
   _cachedAt = Date.now();
 }
 
 export function invalidateCourseCache(): void {
+  _cachedForCookie = null;
   _courses = null;
   _cachedAt = 0;
 }

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { clearEdtCookie } from "@/lib/cookie-store";
+import { invalidateCourseCache as clearEdtCookie } from "@/lib/cookie-store";
 
 export async function POST() {
   const jar = await cookies();
