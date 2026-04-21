@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
-import { getCachedCourses, getCachedAt, setCachedCourses } from "@/lib/cookie-store";
+import {
+  getCachedAt,
+  getCachedCourses,
+  setCachedCourses,
+} from "@/lib/cookie-store";
 import type { EdtResponse } from "@/types/edt";
 
 const EDT_API =

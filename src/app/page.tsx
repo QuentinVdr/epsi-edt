@@ -58,11 +58,14 @@ export default function Home() {
 
       if (!res.ok) throw new Error(`${res.status}`);
 
-      const data: EdtResponse & { _totalCached?: number; _fetchedAt?: string } = await res.json();
+      const data: EdtResponse & { _totalCached?: number; _fetchedAt?: string } =
+        await res.json();
       const fetched = data.Data ?? [];
       setCourses(fetched);
       setIsOffline(false);
-      const fetchedAt = data._fetchedAt ? new Date(data._fetchedAt) : new Date();
+      const fetchedAt = data._fetchedAt
+        ? new Date(data._fetchedAt)
+        : new Date();
       setLastUpdated(fetchedAt);
       localStorage.setItem(
         CACHE_KEY,
