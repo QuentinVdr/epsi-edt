@@ -76,13 +76,13 @@ export function DayView({ courses, currentDate, onDateChange }: Props) {
         <div className="flex w-full min-w-full">
           {/* Hour gutter */}
           <div
-            className="relative sticky left-0 z-10 w-14 flex-shrink-0 border-r border-white/10 bg-zinc-950"
+            className="relative sticky left-0 z-10 w-8 md:w-14 flex-shrink-0 border-r border-white/10 bg-zinc-950"
             style={{ height: (hourEnd - hourStart) * PX_PER_HOUR }}
           >
             {hours.map((h) => (
               <div
                 key={h}
-                className="absolute w-full border-t border-white/10 pr-2 text-right text-xs text-white/40"
+                className="absolute w-full border-t border-white/10 md:pr-2 text-right text-xs text-white/40"
                 style={{ top: (h - hourStart) * PX_PER_HOUR }}
               >
                 {h}h
