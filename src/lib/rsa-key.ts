@@ -14,10 +14,10 @@
  */
 
 import {
+  constants as cryptoConstants,
   generateKeyPairSync,
   privateDecrypt,
-  constants as cryptoConstants,
-} from "crypto";
+} from "node:crypto";
 
 // ── Key generation (runs once at module load, ~50–100 ms) ────────────────────
 
