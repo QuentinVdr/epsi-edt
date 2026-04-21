@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { CourseModal } from "@/components/CourseModal";
 import {
   addDays,
@@ -11,10 +10,11 @@ import {
   getHourRange,
   isLight,
   isSameDay,
-  PX_PER_HOUR,
   positionCourse,
+  PX_PER_HOUR,
 } from "@/lib/edt-utils";
 import type { Course } from "@/types/edt";
+import { useState } from "react";
 
 interface Props {
   courses: Course[];
@@ -75,20 +75,6 @@ export function DayView({ courses, currentDate, onDateChange }: Props) {
 
       {/* Grid */}
       <div className="relative flex flex-col flex-1 overflow-auto rounded-xl border border-white/10">
-        {/* sticky header row */}
-        <div className="sticky top-0 z-20 flex w-full min-w-full">
-          <div
-            className={`sticky left-0 z-30 flex w-14 flex-shrink-0 items-center justify-center border-b border-r border-white/10 bg-zinc-950 text-xs font-bold ${isToday ? "text-blue-300" : "text-white/50"}`}
-          >
-            {dayName.slice(0, 3)}
-          </div>
-          <div
-            className={`flex h-12 flex-1 items-center justify-center border-b border-white/10 text-2xl font-bold ${isToday ? "bg-blue-600/20 text-blue-300" : "text-white"}`}
-          >
-            {currentDate.getDate()}
-          </div>
-        </div>
-
         {/* scrollable body */}
         <div className="flex w-full min-w-full">
           {/* Hour gutter */}
