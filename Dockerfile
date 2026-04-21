@@ -20,6 +20,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 COPY next.config.ts tsconfig.json postcss.config.mjs tailwind.config.* ./
 COPY src ./src
+COPY public ./public
 
 RUN corepack enable pnpm && pnpm run build
 
