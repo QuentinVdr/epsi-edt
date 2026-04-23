@@ -1,12 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
 import { DayView } from "@/components/DayView";
 import { MonthView } from "@/components/MonthView";
 import { WeekCalendar } from "@/components/WeekCalendar";
 import { YearView } from "@/components/YearView";
 import type { Course, EdtResponse, ViewType } from "@/types/edt";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 const CACHE_KEY = "edt-cache-v1";
 const VIEW_KEY = "edt-view";
@@ -100,10 +100,23 @@ export default function Home() {
   }, [fetchCourses]);
 
   const updatedLabel = lastUpdated
-    ? lastUpdated.toLocaleTimeString("fr-FR", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+    ? (() => {
+        const now = new Date();
+        const isToday =
+          lastUpdated.getFullYear() === now.getFullYear() &&
+          lastUpdated.getMonth() === now.getMonth() &&
+          lastUpdated.getDate() === now.getDate();
+        const time = lastUpdated.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        if (isToday) return time;
+        const date = lastUpdated.toLocaleDateString("fr-FR", {
+          day: "2-digit",
+          month: "2-digit",
+        });
+        return `${date} ${time}`;
+      })()
     : null;
 
   return (
