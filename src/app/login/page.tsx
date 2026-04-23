@@ -78,6 +78,7 @@ export default function LoginPage() {
         return;
       }
 
+      localStorage.setItem("edt-username", username);
       router.push("/");
       router.refresh();
     } catch {
