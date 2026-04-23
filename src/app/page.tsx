@@ -7,6 +7,7 @@ import { YearView } from "@/components/YearView";
 import type { Course, EdtResponse, ViewType } from "@/types/edt";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const CACHE_KEY = "edt-cache-v1";
 const VIEW_KEY = "edt-view";
@@ -33,6 +34,7 @@ export default function Home() {
   });
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
@@ -46,40 +48,59 @@ export default function Home() {
     router.push("/login");
   }
 
-  const fetchCourses = useCallback(async () => {
-    try {
-      const res = await fetch("/api/edt");
+  const fetchCourses = useCallback(
+    async (force = false) => {
+      setIsRefreshing(true);
+      try {
+        const res = await fetch(force ? "/api/edt?force=true" : "/api/edt");
 
-      if (res.status === 401) {
-        // Cookie expired or not set → go to login
-        router.push("/login");
-        return;
+        if (res.status === 401) {
+          toast.error("Session expirée", {
+            description: "Votre session a expiré, veuillez vous reconnecter.",
+            duration: Infinity,
+            action: {
+              label: "Se reconnecter",
+              onClick: () => router.push("/login"),
+            },
+          });
+          return;
+        }
+
+        if (!res.ok) throw new Error(`${res.status}`);
+
+        const data: EdtResponse & {
+          _totalCached?: number;
+          _fetchedAt?: string;
+        } = await res.json();
+        const fetched = data.Data ?? [];
+        setCourses(fetched);
+        setIsOffline(false);
+        const fetchedAt = data._fetchedAt
+          ? new Date(data._fetchedAt)
+          : new Date();
+        setLastUpdated(fetchedAt);
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            courses: fetched,
+            at: fetchedAt.toISOString(),
+          } satisfies Cache),
+        );
+        if (force) {
+          toast.success("EDT mis à jour", { duration: 1000 });
+        }
+      } catch {
+        setIsOffline(true);
+        toast.error("Impossible de charger l'EDT", {
+          description: "Données en cache affichées.",
+        });
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
       }
-
-      if (!res.ok) throw new Error(`${res.status}`);
-
-      const data: EdtResponse & { _totalCached?: number; _fetchedAt?: string } =
-        await res.json();
-      const fetched = data.Data ?? [];
-      setCourses(fetched);
-      setIsOffline(false);
-      const fetchedAt = data._fetchedAt
-        ? new Date(data._fetchedAt)
-        : new Date();
-      setLastUpdated(fetchedAt);
-      localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({
-          courses: fetched,
-          at: fetchedAt.toISOString(),
-        } satisfies Cache),
-      );
-    } catch {
-      setIsOffline(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [router]);
+    },
+    [router],
+  );
 
   useEffect(() => {
     const savedView = localStorage.getItem(VIEW_KEY) as ViewType | null;
@@ -139,17 +160,26 @@ export default function Home() {
             {!isLoading && (
               <>
                 <span
-                  className={`h-2 w-2 flex-shrink-0 rounded-full ${isOffline ? "bg-red-500" : "bg-green-500"}`}
+                  className={`h-2 w-2 flex-shrink-0 rounded-full transition-colors ${isOffline ? "bg-red-500" : isRefreshing ? "bg-yellow-400 animate-pulse" : "bg-green-500"}`}
                 />
                 <span className="whitespace-nowrap text-white/40">
-                  {isOffline ? "Hors-ligne" : `Mis à jour ${updatedLabel}`}
+                  {isOffline
+                    ? "Hors-ligne"
+                    : isRefreshing
+                      ? "Actualisation…"
+                      : `Mis à jour ${updatedLabel}`}
                 </span>
                 <button
-                  onClick={fetchCourses}
-                  className="rounded border border-white/10 px-2 py-0.5 text-white/50 hover:bg-white/10 hover:text-white"
+                  onClick={() => fetchCourses(true)}
+                  disabled={isRefreshing}
+                  className="rounded border border-white/10 px-2 py-0.5 text-white/50 hover:bg-white/10 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
                   title="Rafraîchir"
                 >
-                  ↻
+                  <span
+                    className={isRefreshing ? "inline-block animate-spin" : ""}
+                  >
+                    ↻
+                  </span>
                 </button>
               </>
             )}
