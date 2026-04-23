@@ -1,13 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { DayView } from "@/components/DayView";
 import { MonthView } from "@/components/MonthView";
 import { WeekCalendar } from "@/components/WeekCalendar";
 import { YearView } from "@/components/YearView";
 import type { Course, EdtResponse, ViewType } from "@/types/edt";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
 
 const CACHE_KEY = "edt-cache-v1";
 const VIEW_KEY = "edt-view";
