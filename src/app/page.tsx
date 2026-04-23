@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DayView } from "@/components/DayView";
 import { MonthView } from "@/components/MonthView";
@@ -11,7 +11,6 @@ import { clearCache, getCache, setCache } from "@/lib/edt-db";
 import type { Course, EdtResponse, ViewType } from "@/types/edt";
 
 const VIEW_KEY = "edt-view";
-const USERNAME_KEY = "edt-username";
 
 const VIEWS: { key: ViewType; label: string }[] = [
   { key: "day", label: "Jour" },
@@ -22,7 +21,6 @@ const VIEWS: { key: ViewType; label: string }[] = [
 
 export default function Home() {
   const router = useRouter();
-  const usernameRef = useRef<string | null>(null);
   const [view, setView] = useState<ViewType>("week");
   const [currentDate, setCurrentDate] = useState(() => {
     const d = new Date();
@@ -41,12 +39,8 @@ export default function Home() {
   }
 
   async function logout() {
-    const username = usernameRef.current;
     await fetch("/api/auth/logout", { method: "POST" });
-    if (username) {
-      await clearCache(username).catch(() => {});
-      localStorage.removeItem(USERNAME_KEY);
-    }
+    await clearCache().catch(() => {});
     router.push("/login");
   }
 
@@ -81,10 +75,7 @@ export default function Home() {
           ? new Date(data._fetchedAt)
           : new Date();
         setLastUpdated(fetchedAt);
-        const username = usernameRef.current;
-        if (username) {
-          setCache(username, fetched, fetchedAt.toISOString()).catch(() => {});
-        }
+        setCache(fetched, fetchedAt.toISOString()).catch(() => {});
         if (force) {
           toast.success("EDT mis à jour", { duration: 1000 });
         }
@@ -105,24 +96,17 @@ export default function Home() {
     const savedView = localStorage.getItem(VIEW_KEY) as ViewType | null;
     if (savedView && VIEWS.some((v) => v.key === savedView)) setView(savedView);
 
-    const username = localStorage.getItem(USERNAME_KEY);
-    usernameRef.current = username;
-
     // Show cached data instantly from IndexedDB, then fetch fresh
-    if (username) {
-      getCache(username)
-        .then((cached) => {
-          if (cached) {
-            setCourses(cached.courses);
-            setLastUpdated(new Date(cached.at));
-            setIsLoading(false);
-          }
-        })
-        .catch(() => {})
-        .finally(() => fetchCourses());
-    } else {
-      fetchCourses();
-    }
+    getCache()
+      .then((cached) => {
+        if (cached) {
+          setCourses(cached.courses);
+          setLastUpdated(new Date(cached.at));
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {})
+      .finally(() => fetchCourses());
   }, [fetchCourses]);
 
   const updatedLabel = lastUpdated

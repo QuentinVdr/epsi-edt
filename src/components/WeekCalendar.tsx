@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { CourseModal } from "@/components/CourseModal";
 import {
   addDays,
@@ -11,10 +10,11 @@ import {
   getHourRange,
   getMondayOf,
   isSameDay,
-  PX_PER_HOUR,
   positionCourse,
+  PX_PER_HOUR,
 } from "@/lib/edt-utils";
 import type { Course } from "@/types/edt";
+import { useState } from "react";
 
 interface Props {
   courses: Course[];
@@ -155,16 +155,16 @@ export function WeekCalendar({
                       <p className="truncate font-semibold leading-tight">
                         {course.Commentaire}
                       </p>
-                      {course.NomProf && (
-                        <p className="truncate opacity-60">{course.NomProf}</p>
-                      )}
-                      {course.Salles && (
-                        <p className="truncate opacity-60">{course.Salles}</p>
-                      )}
                       <p className="truncate opacity-75">
                         {formatCourseTime(course.Start)}–
                         {formatCourseTime(course.End)}
                       </p>
+                      <p className="truncate opacity-60">
+                        {course.NomProf ?? "Autonomie i guess"}
+                      </p>
+                      {course.Salles && (
+                        <p className="truncate opacity-60">{course.Salles}</p>
+                      )}
                     </button>
                   );
                 })}

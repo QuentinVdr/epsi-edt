@@ -37,9 +37,8 @@ export function CourseModal({
             {formatCourseTime(course.Start)} – {formatCourseTime(course.End)} (
             {course.Duree}h)
           </Row>
+          <Row icon="👤">{course.NomProf ?? "Autonomie i guess"}</Row>
           {course.Salles && <Row icon="📍">{course.Salles}</Row>}
-          {course.NomProf && <Row icon="👤">{course.NomProf}</Row>}
-          <Row icon="🏫">{course.CoursMixteInfoBulle}</Row>
         </div>
       </div>
     </div>

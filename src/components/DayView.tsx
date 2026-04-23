@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { CourseModal } from "@/components/CourseModal";
 import {
   addDays,
@@ -9,10 +8,11 @@ import {
   getCoursesForDay,
   getHourRange,
   isSameDay,
-  PX_PER_HOUR,
   positionCourse,
+  PX_PER_HOUR,
 } from "@/lib/edt-utils";
 import type { Course } from "@/types/edt";
+import { useState } from "react";
 
 interface Props {
   courses: Course[];
@@ -127,16 +127,16 @@ export function DayView({ courses, currentDate, onDateChange }: Props) {
                   <p className="font-semibold leading-tight">
                     {course.Commentaire}
                   </p>
-                  {course.NomProf && (
-                    <p className="opacity-60">{course.NomProf}</p>
-                  )}
-                  {course.Salles && (
-                    <p className="opacity-60">{course.Salles}</p>
-                  )}
                   <p className="mt-0.5 opacity-75">
                     {formatCourseTime(course.Start)} –{" "}
                     {formatCourseTime(course.End)} ({course.Duree}h)
                   </p>
+                  <p className="opacity-60">
+                    {course.NomProf ?? "Autonomie i guess"}
+                  </p>
+                  {course.Salles && (
+                    <p className="opacity-60">{course.Salles}</p>
+                  )}
                 </button>
               );
             })}
