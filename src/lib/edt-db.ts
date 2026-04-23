@@ -26,7 +26,10 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
-export async function getCache(): Promise<{ courses: Course[]; at: string } | null> {
+export async function getCache(): Promise<{
+  courses: Course[];
+  at: string;
+} | null> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, "readonly");
@@ -44,7 +47,11 @@ export async function setCache(courses: Course[], at: string): Promise<void> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).put({ key: CACHE_KEY, courses, at } satisfies CacheEntry);
+    tx.objectStore(STORE).put({
+      key: CACHE_KEY,
+      courses,
+      at,
+    } satisfies CacheEntry);
     tx.oncomplete = () => {
       db.close();
       resolve();

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { CourseModal } from "@/components/CourseModal";
 import {
   addDays,
@@ -10,11 +11,10 @@ import {
   getHourRange,
   getMondayOf,
   isSameDay,
-  positionCourse,
   PX_PER_HOUR,
+  positionCourse,
 } from "@/lib/edt-utils";
 import type { Course } from "@/types/edt";
-import { useState } from "react";
 
 interface Props {
   courses: Course[];
