@@ -4,8 +4,9 @@ import { cacheAge } from "@/lib/cookie-store";
 
 export async function GET() {
   const jar = await cookies();
+  const edtSession = jar.get("edt-session")?.value;
   return NextResponse.json({
-    authenticated: jar.has("edt-session"),
-    cacheAgeSeconds: cacheAge(),
+    authenticated: !!edtSession,
+    cacheAgeSeconds: edtSession ? cacheAge(edtSession) : -1,
   });
 }

@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       Data: courses,
       Total: courses.length,
       _totalCached: all.length,
-      _fetchedAt: new Date(getCachedAt()).toISOString(),
+      _fetchedAt: new Date(getCachedAt(edtSession)).toISOString(),
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "UNKNOWN";
