@@ -96,6 +96,11 @@ export default function Home() {
     const savedView = localStorage.getItem(VIEW_KEY) as ViewType | null;
     if (savedView && VIEWS.some((v) => v.key === savedView)) setView(savedView);
 
+    // Ask the browser to keep our IndexedDB cache around — without this, Safari
+    // wipes it after 7 days of no interaction, and Chrome may evict under
+    // storage pressure.
+    navigator.storage?.persist?.().catch(() => {});
+
     // Show cached data instantly from IndexedDB, then fetch fresh
     getCache()
       .then((cached) => {
